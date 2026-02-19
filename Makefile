@@ -1,9 +1,9 @@
 NAME	:= philosophers
-CFLAGS	:= -Wextra -Wall -Werror -pthread -g
+CFLAGS	:= -Wextra -Wall -Werror -g -fsanitize=thread
 
 HEADERS	:= -I ./include
 
-SRCS	:=  src/philosophers.c
+SRCS	:=  src/philosophers.c src/initialize.c src/input_check.c src/utils.c
 
 GREEN = \033[1;32m
 BLUE = \033[1;34m
@@ -21,7 +21,7 @@ $(OBJ_DIR)/%.o : src/%.c
 	@printf "$(GREEN).$(RESET)"
 
 $(NAME): $(OBJS)
-	@$(CC) $(OBJS) $(HEADERS) -lreadline -o $(NAME)
+	@$(CC) $(CFLAGS) $(OBJS) $(HEADERS) -o $(NAME)
 
 clean:
 	@printf "$(BLUE)Cleaned Up$(RESET)\n"
