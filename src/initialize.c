@@ -6,7 +6,7 @@
 /*   By: hkonstan <hkonstan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/18 13:45:34 by hariskon          #+#    #+#             */
-/*   Updated: 2026/02/19 21:36:38 by hkonstan         ###   ########.fr       */
+/*   Updated: 2026/02/20 17:30:48 by hkonstan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,15 +39,12 @@ static int	init_philos(t_total *total)
 	{
 		total->philosophers[i].id = i;
 		total->philosophers[i].times_eaten = 0;
-		total->philosophers[i].last_eat_time = 0;//need to check that.
+		total->philosophers[i].last_eat_time = get_time(total->time);
 		if (i == 0)
 			total->philosophers[i].left_fork = &total->forks[total->num_philosophers - 1];
 		else
-			total->philosophers[i].left_fork = &total->forks[i];
-		if (i == total->num_philosophers - 1)
-			total->philosophers[i].right_fork = &total->forks[0];
-		else
-			total->philosophers[i].right_fork = &total->forks[i];
+			total->philosophers[i].left_fork = &total->forks[i - 1];
+		total->philosophers[i].right_fork = &total->forks[i];
 		if (pthread_mutex_init(&total->philosophers[i].eat_mutex, NULL))
 		{
 			while (i >= 0)
@@ -69,7 +66,7 @@ static int	init_total(char **argv, t_total *total)
 		total->num_meals = check_number(argv[5]);
 	total->state = ALIVE;
 	if (pthread_mutex_init(&total->print_mutex, NULL))
-			return (write(2, "mutex_init fail in init_total", 29), 0);
+		return (write(2, "mutex_init fail in init_total", 29), 0);
 	return (1);
 }
 

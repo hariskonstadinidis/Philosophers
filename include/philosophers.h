@@ -6,7 +6,7 @@
 /*   By: hkonstan <hkonstan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/18 12:30:33 by hariskon          #+#    #+#             */
-/*   Updated: 2026/02/19 21:26:07 by hkonstan         ###   ########.fr       */
+/*   Updated: 2026/02/20 15:36:09 by hkonstan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,11 @@ typedef struct s_total	t_total;
 typedef enum s_state
 {
 	DEAD,
-	ALIVE
+	ALIVE,
+	FORK,
+	EAT,
+	SLEEP,
+	THINK
 }	t_state;
 
 typedef struct s_philo
@@ -41,7 +45,7 @@ typedef struct s_philo
 
 typedef struct s_total
 {
-	long			time;
+	long long		time;
 	t_state			state;
 	int				num_philosophers;
 	long long		time_to_die;
@@ -54,9 +58,9 @@ typedef struct s_total
 	pthread_t		monitor;
 }	t_total;
 
-int		check_number(char *str);
-int		check_input(int argc, char **argv);
-int		initialize(t_total *total, char **argv);
-long	get_time(long start_time);
+int			check_number(char *str);
+int			check_input(int argc, char **argv);
+int			initialize(t_total *total, char **argv);
+long long	get_time(long start_time);
 
 #endif

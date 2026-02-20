@@ -6,57 +6,124 @@
 /*   By: hkonstan <hkonstan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/18 12:32:05 by hariskon          #+#    #+#             */
-/*   Updated: 2026/02/19 21:45:58 by hkonstan         ###   ########.fr       */
+/*   Updated: 2026/02/20 18:24:55 by hkonstan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-void	*print(void *arg)
+static int	print_message(t_philo *philo, t_state status)
+{
+	pthread_mutex_lock(&philo->total->print_mutex);
+	if (philo->total->state == DEAD)
+	{
+		pthread_mutex_unlock(&philo->total->print_mutex);
+		return (0);
+	}
+	else if (status == FORK)
+		printf("%lli philosopher %i took a fork\n", get_time(philo->total->time), philo->id + 1);
+	else if (status == EAT)
+		printf("%lli philosopher %i is eating\n", get_time(philo->total->time), philo->id + 1);
+	else if (status == SLEEP)
+		printf("%lli philosopher %i is sleeping\n", get_time(philo->total->time), philo->id + 1);
+	else
+		printf("%lli philosopher %i is thinking\n", get_time(philo->total->time), philo->id + 1);
+	pthread_mutex_unlock(&philo->total->print_mutex);
+	return (1);
+}
+
+static int	get_forks(t_philo *philo)
+{
+	int	id;
+
+	id = philo->id;
+	if (id % 2 == 0)
+	{
+		pthread_mutex_lock(philo->left_fork);
+		if (!print_message(philo, FORK))
+			return (pthread_mutex_unlock(philo->left_fork), 0);
+		pthread_mutex_lock(philo->right_fork);
+		if (!print_message(philo, FORK))
+			return (pthread_mutex_unlock(philo->right_fork), pthread_mutex_unlock(philo->left_fork), 0);
+		pthread_mutex_lock(&philo->eat_mutex);
+		philo->last_eat_time = get_time(philo->total->time) + philo->total->time;
+		philo->times_eaten++;
+		pthread_mutex_unlock(&philo->eat_mutex);
+		if (!print_message(philo, EAT))
+			return (pthread_mutex_unlock(philo->right_fork), pthread_mutex_unlock(philo->left_fork), 0);
+		usleep(philo->total->time_to_eat * 1000);
+		pthread_mutex_unlock(philo->left_fork);
+		pthread_mutex_unlock(philo->right_fork);
+	}
+	else
+	{
+		pthread_mutex_lock(philo->right_fork);
+		if (!print_message(philo, FORK))
+			return (pthread_mutex_unlock(philo->right_fork), 0);
+		pthread_mutex_lock(philo->left_fork);
+		if (!print_message(philo, FORK))
+			return (pthread_mutex_unlock(philo->left_fork), pthread_mutex_unlock(philo->right_fork), 0);
+		pthread_mutex_lock(&philo->eat_mutex);
+		philo->last_eat_time = get_time(philo->total->time) + philo->total->time;
+		philo->times_eaten++;
+		pthread_mutex_unlock(&philo->eat_mutex);
+		if (!print_message(philo, EAT))
+			return (pthread_mutex_unlock(philo->left_fork), pthread_mutex_unlock(philo->right_fork), 0);
+		usleep(philo->total->time_to_eat * 1000);
+		pthread_mutex_unlock(philo->right_fork);
+		pthread_mutex_unlock(philo->left_fork);
+	}
+	return (1);
+}
+
+static void	*routine(void *arg)
 {
 	t_philo	*philo;
 
 	philo = (t_philo *)arg;
+	pthread_mutex_lock(&philo->total->print_mutex);
+	pthread_mutex_unlock(&philo->total->print_mutex);
+	if (philo->id % 2 != 0)
+		usleep(250);
 	while (1)
 	{
-		pthread_mutex_lock(&philo->eat_mutex);
-		philo->last_eat_time = get_time(philo->total->time);
-		philo->times_eaten++;
-		pthread_mutex_lock(&philo->total->print_mutex);
-			if (philo->total->state == DEAD)
-				break;
-			else
-				printf("philo %i ate %i time at %li.\n", philo->id, philo->times_eaten, get_time(philo->total->time));
-		pthread_mutex_unlock(&philo->total->print_mutex);
-		usleep(10000);
-		if (philo->times_eaten > 5)
+		if (!get_forks(philo))
 			return (NULL);
-		pthread_mutex_unlock(&philo->eat_mutex);
+		if (!print_message (philo, SLEEP))
+			return (NULL);
+		usleep(philo->total->time_to_sleep * 1000);
+		if (!print_message (philo, THINK))
+			return (NULL);
 	}
 	return (NULL);
 }
 
+static void	check_state(t_total *total, int i)
+{
+	pthread_mutex_lock(&total->print_mutex);
+	total->state = DEAD;
+	printf("%lli philosopher %i died\n", get_time(total->time), total->philosophers[i].id + 1);
+	pthread_mutex_unlock(&total->print_mutex);
+}
 void	*fail_check(void *arg)
 {
-	t_total	*total;
-	int 	i;
-	long	time;
-	
+	t_total		*total;
+	int			i;
+
 	total = (t_total *)arg;
 	i = 0;
-	while (i < total->num_philosophers)
+	while (1)
 	{
-		time = get_time(total->time);
 		pthread_mutex_lock(&total->philosophers[i].eat_mutex);
-		if (time - total->philosophers->last_eat_time > total->time_to_die)
+		if (get_time(total->philosophers[i].last_eat_time) > total->time_to_die)
 		{
-			pthread_mutex_lock(&total->print_mutex);
-			total->state = DEAD;
-			pthread_mutex_unlock(&total->print_mutex);
-			usleep(1000);
-		}	
+			check_state(total, i);
+			break ;
+		}
 		pthread_mutex_unlock(&total->philosophers[i].eat_mutex);
 		i++;
+		if (i == total->num_philosophers)
+			i = 0;
 	}
 	return (NULL);
 }
@@ -71,22 +138,24 @@ static int	start_sim(t_total *total)
 	time = t.tv_sec * 1000 + t.tv_usec / 1000;
 	total->time = time;
 	i = 0;
+	pthread_mutex_lock(&total->print_mutex);
 	while (i < total->num_philosophers)
 	{
 		total->philosophers[i].last_eat_time = time;
-		if (pthread_create(&total->philosophers[i].thread, NULL, print, &total->philosophers[i]))
+		if (pthread_create(&total->philosophers[i].thread, NULL, routine, &total->philosophers[i]))
 			return (write(2, "pthread_init fail 1 in init_philos", 34), 0);
 		i++;
 	}
-	if (pthread_create(&total->monitor, NULL, fail_check, &total))
-			return (write(2, "pthread_init fail 2 in init_philos", 34), 0);
+	if (pthread_create(&total->monitor, NULL, fail_check, total))
+		return (write(2, "pthread_init fail 2 in init_philos", 34), 0);
+	pthread_mutex_unlock(&total->print_mutex);
 	return (1);
 }
 
 static int	end_sim(t_total *total)
 {
 	int	i;
-	
+
 	i = 0;
 	while (i < total->num_philosophers)
 	{
@@ -95,14 +164,14 @@ static int	end_sim(t_total *total)
 		i++;
 	}
 	if (pthread_join(total->monitor, NULL))
-			return (write(2, "pthread_join fail 2 in init_philos", 34), 0);
+		return (write(2, "pthread_join fail 2 in init_philos", 34), 0);
 	return (1);
 }
 
 int	main(int argc, char **argv)
 {
 	t_total		total;
-	
+
 	printf("Hello, Matrix!\n");
 	if (!check_input(argc, argv))
 		return (1);
