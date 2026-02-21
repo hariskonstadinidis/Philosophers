@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   initialize.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hkonstan <hkonstan@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hariskon <hariskon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/18 13:45:34 by hariskon          #+#    #+#             */
-/*   Updated: 2026/02/20 17:30:48 by hkonstan         ###   ########.fr       */
+/*   Updated: 2026/02/21 23:02:23 by hariskon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,8 @@ static int	init_total(char **argv, t_total *total)
 	total->time_to_sleep = check_number(argv[4]);
 	if (argv[5])
 		total->num_meals = check_number(argv[5]);
+	else
+		total->num_meals = -1;
 	total->state = ALIVE;
 	if (pthread_mutex_init(&total->print_mutex, NULL))
 		return (write(2, "mutex_init fail in init_total", 29), 0);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philosophers.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hkonstan <hkonstan@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hariskon <hariskon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/18 12:30:33 by hariskon          #+#    #+#             */
-/*   Updated: 2026/02/20 15:36:09 by hkonstan         ###   ########.fr       */
+/*   Updated: 2026/02/21 23:13:18 by hariskon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ typedef enum s_state
 {
 	DEAD,
 	ALIVE,
+	FED,
 	FORK,
 	EAT,
 	SLEEP,
