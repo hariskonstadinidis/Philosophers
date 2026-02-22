@@ -6,13 +6,13 @@
 /*   By: hariskon <hariskon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/19 20:50:31 by hkonstan          #+#    #+#             */
-/*   Updated: 2026/02/22 19:38:09 by hariskon         ###   ########.fr       */
+/*   Updated: 2026/02/22 20:49:26 by hariskon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-long long	get_time(long start_time)
+long long	get_time(long long start_time)
 {
 	struct timeval	t;
 	long long		c_time;
@@ -51,7 +51,7 @@ void	ft_usleep(t_philo *philo, long long duration)
 		}
 		else
 			pthread_mutex_unlock(&philo->total->print_mutex);
-		usleep(1000);
+		usleep(500);
 	}
 }
 

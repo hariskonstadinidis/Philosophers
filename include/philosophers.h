@@ -6,7 +6,7 @@
 /*   By: hariskon <hariskon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/18 12:30:33 by hariskon          #+#    #+#             */
-/*   Updated: 2026/02/22 19:29:39 by hariskon         ###   ########.fr       */
+/*   Updated: 2026/02/22 20:36:44 by hariskon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ int			check_state(t_state state);
 int			check_fed(t_total *total, int *fed_count, int i);
 
 int			initialize(t_total *total, char **argv);
-long long	get_time(long start_time);
+long long	get_time(long long start_time);
 
 int			get_forks(t_philo *philo);
 void		change_state(t_total *total, int i);

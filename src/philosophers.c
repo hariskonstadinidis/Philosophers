@@ -6,7 +6,7 @@
 /*   By: hariskon <hariskon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/18 12:32:05 by hariskon          #+#    #+#             */
-/*   Updated: 2026/02/22 19:35:48 by hariskon         ###   ########.fr       */
+/*   Updated: 2026/02/22 20:27:42 by hariskon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ static int	get_one_fork(pthread_mutex_t *first_fork,
 		return (pthread_mutex_unlock(second_fork),
 			pthread_mutex_unlock(first_fork), 0);
 	pthread_mutex_lock(&philo->eat_mutex);
-	philo->last_eat_time = get_time(philo->total->time) + philo->total->time;
+	philo->last_eat_time = get_time(0);
 	philo->times_eaten++;
 	pthread_mutex_unlock(&philo->eat_mutex);
 	if (!print_message(philo, EAT))
@@ -81,18 +81,22 @@ static void	handle_one_philo(t_total *total)
 
 int	main(int argc, char **argv)
 {
-	t_total		total;
+	t_total		*total;
 
+	total = malloc(sizeof(t_total));
+	if (!total)
+		return (write(2, "malloc fail in main", 19), 1);
 	if (!check_input(argc, argv))
 		return (1);
-	if (!initialize(&total, argv))
+	if (!initialize(total, argv))
 		return (1);
-	if (total.num_philosophers == 1)
-		return (handle_one_philo(&total), 0);
-	if (!start_sim(&total))
+	if (total->num_philosophers == 1)
+		return (handle_one_philo(total), 0);
+	if (!start_sim(total))
 		return (1);
-	if (!end_sim(&total))
+	if (!end_sim(total))
 		return (1);
-	free_all(&total);
+	free_all(total);
+	free(total);
 	return (0);
 }

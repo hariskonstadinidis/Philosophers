@@ -6,7 +6,7 @@
 /*   By: hariskon <hariskon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/22 19:10:28 by hariskon          #+#    #+#             */
-/*   Updated: 2026/02/22 19:43:29 by hariskon         ###   ########.fr       */
+/*   Updated: 2026/02/22 20:54:13 by hariskon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ static void	*routine(void *arg)
 	pthread_mutex_lock(&philo->total->print_mutex);
 	pthread_mutex_unlock(&philo->total->print_mutex);
 	if (philo->id % 2 != 0)
-		usleep(philo->total->time_to_eat * 1000 / 2);
+		usleep(2000);
 	while (1)
 	{
 		if (!get_forks(philo))
@@ -30,6 +30,7 @@ static void	*routine(void *arg)
 		ft_usleep(philo, philo->total->time_to_sleep);
 		if (!print_message (philo, THINK))
 			return (NULL);
+		usleep(1000);
 	}
 	return (NULL);
 }
@@ -55,7 +56,7 @@ static void	*fail_check(void *arg)
 		if (i == total->num_philosophers)
 		{
 			i = 0;
-			usleep(1000);
+			usleep(2000);
 		}
 	}
 	return (NULL);

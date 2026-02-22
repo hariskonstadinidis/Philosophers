@@ -1,4 +1,4 @@
-NAME	:= philosophers
+NAME	:= philo
 CFLAGS	:= -Wextra -Wall -Werror -g
 
 HEADERS	:= -I ./include
