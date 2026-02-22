@@ -1,9 +1,10 @@
 NAME	:= philosophers
-CFLAGS	:= -Wextra -Wall -Werror -g -fsanitize=thread
+CFLAGS	:= -Wextra -Wall -Werror -g
 
 HEADERS	:= -I ./include
 
-SRCS	:=  src/philosophers.c src/initialize.c src/input_check.c src/utils.c
+SRCS	:=  src/philosophers.c src/initialize.c src/input_check.c src/utils.c src/free.c \
+			src/simulation.c
 
 GREEN = \033[1;32m
 BLUE = \033[1;34m

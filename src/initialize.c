@@ -6,7 +6,7 @@
 /*   By: hariskon <hariskon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/18 13:45:34 by hariskon          #+#    #+#             */
-/*   Updated: 2026/02/21 23:02:23 by hariskon         ###   ########.fr       */
+/*   Updated: 2026/02/22 19:36:59 by hariskon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,10 @@ static int	init_philos(t_total *total)
 	{
 		total->philosophers[i].id = i;
 		total->philosophers[i].times_eaten = 0;
-		total->philosophers[i].last_eat_time = get_time(total->time);
+		total->philosophers[i].last_eat_time = total->time;
 		if (i == 0)
-			total->philosophers[i].left_fork = &total->forks[total->num_philosophers - 1];
+			total->philosophers[i].left_fork
+				= &total->forks[total->num_philosophers - 1];
 		else
 			total->philosophers[i].left_fork = &total->forks[i - 1];
 		total->philosophers[i].right_fork = &total->forks[i];
