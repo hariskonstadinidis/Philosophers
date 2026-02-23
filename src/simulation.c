@@ -6,7 +6,7 @@
 /*   By: hariskon <hariskon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/22 19:10:28 by hariskon          #+#    #+#             */
-/*   Updated: 2026/02/22 20:54:13 by hariskon         ###   ########.fr       */
+/*   Updated: 2026/02/23 13:19:38 by hariskon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,11 +78,11 @@ int	start_sim(t_total *total)
 		total->philosophers[i].last_eat_time = time;
 		if (pthread_create(&total->philosophers[i].thread, NULL, routine,
 				&total->philosophers[i]))
-			return (write(2, "pthread_init fail 1 in init_philos", 34), 0);
+			return (write(2, "pthread_init fail 1 in init_philos\n", 35), 0);
 		i++;
 	}
 	if (pthread_create(&total->monitor, NULL, fail_check, total))
-		return (write(2, "pthread_init fail 2 in init_philos", 34), 0);
+		return (write(2, "pthread_init fail 2 in init_philos\n", 35), 0);
 	pthread_mutex_unlock(&total->print_mutex);
 	return (1);
 }
@@ -95,11 +95,11 @@ int	end_sim(t_total *total)
 	while (i < total->num_philosophers)
 	{
 		if (pthread_join(total->philosophers[i].thread, NULL))
-			return (write(2, "pthread_join fail 1 in init_philos", 34), 0);
+			return (write(2, "pthread_join fail 1 in init_philos\n", 35), 0);
 		i++;
 	}
 	if (pthread_join(total->monitor, NULL))
-		return (write(2, "pthread_join fail 2 in init_philos", 34), 0);
+		return (write(2, "pthread_join fail 2 in init_philos\n", 35), 0);
 	return (1);
 }
 
@@ -120,13 +120,13 @@ int	print_message(t_philo *philo, t_state status)
 		return (0);
 	}
 	else if (status == FORK)
-		printf("%lli philosopher %i took a fork\n", time, philo->id + 1);
+		printf("%lli %i has taken a fork\n", time, philo->id + 1);
 	else if (status == EAT)
-		printf("%lli philosopher %i is eating\n", time, philo->id + 1);
+		printf("%lli %i is eating\n", time, philo->id + 1);
 	else if (status == SLEEP)
-		printf("%lli philosopher %i is sleeping\n", time, philo->id + 1);
+		printf("%lli %i is sleeping\n", time, philo->id + 1);
 	else
-		printf("%lli philosopher %i is thinking\n", time, philo->id + 1);
+		printf("%lli %i is thinking\n", time, philo->id + 1);
 	pthread_mutex_unlock(&philo->total->print_mutex);
 	return (1);
 }

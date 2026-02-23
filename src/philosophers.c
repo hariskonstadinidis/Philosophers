@@ -6,7 +6,7 @@
 /*   By: hariskon <hariskon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/18 12:32:05 by hariskon          #+#    #+#             */
-/*   Updated: 2026/02/22 20:27:42 by hariskon         ###   ########.fr       */
+/*   Updated: 2026/02/23 13:19:51 by hariskon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,6 @@ int	check_fed(t_total *total, int *fed_count, int i)
 	{
 		pthread_mutex_lock(&total->print_mutex);
 		total->state = FED;
-		printf("%lli All philosophers are fed\n", get_time(total->time));
 		pthread_mutex_unlock(&total->print_mutex);
 		pthread_mutex_unlock(&total->philosophers[i].eat_mutex);
 		return (0);
@@ -73,30 +72,26 @@ int	check_fed(t_total *total, int *fed_count, int i)
 
 static void	handle_one_philo(t_total *total)
 {
-	printf("0 philosopher 1 has taken a fork\n");
+	printf("0 1 has taken a fork\n");
 	usleep(total->time_to_die * 1000);
-	printf("%lld philosopher 1 died\n", total->time_to_die);
+	printf("%lld 1 died\n", total->time_to_die);
 	free_all(total);
 }
 
 int	main(int argc, char **argv)
 {
-	t_total		*total;
+	t_total		total;
 
-	total = malloc(sizeof(t_total));
-	if (!total)
-		return (write(2, "malloc fail in main", 19), 1);
 	if (!check_input(argc, argv))
 		return (1);
-	if (!initialize(total, argv))
+	if (!initialize(&total, argv))
+		return (free_all(&total), 1);
+	if (total.num_philosophers == 1)
+		return (handle_one_philo(&total), 0);
+	if (!start_sim(&total))
 		return (1);
-	if (total->num_philosophers == 1)
-		return (handle_one_philo(total), 0);
-	if (!start_sim(total))
+	if (!end_sim(&total))
 		return (1);
-	if (!end_sim(total))
-		return (1);
-	free_all(total);
-	free(total);
+	free_all(&total);
 	return (0);
 }

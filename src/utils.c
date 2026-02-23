@@ -6,7 +6,7 @@
 /*   By: hariskon <hariskon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/19 20:50:31 by hkonstan          #+#    #+#             */
-/*   Updated: 2026/02/22 20:49:26 by hariskon         ###   ########.fr       */
+/*   Updated: 2026/02/23 13:19:26 by hariskon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ void	ft_usleep(t_philo *philo, long long duration)
 		}
 		else
 			pthread_mutex_unlock(&philo->total->print_mutex);
-		usleep(500);
+		usleep(1000);
 	}
 }
 
@@ -59,10 +59,8 @@ void	change_state(t_total *total, int i)
 {
 	pthread_mutex_lock(&total->print_mutex);
 	total->state = DEAD;
-	printf("%lli philosopher %i died from hunger at %lli\n",
-		get_time(total->time),
-		total->philosophers[i].id + 1,
-		get_time(total->philosophers[i].last_eat_time));
+	printf("%lli %i died\n", get_time(total->time),
+		total->philosophers[i].id + 1);
 	pthread_mutex_unlock(&total->print_mutex);
 	pthread_mutex_unlock(&total->philosophers[i].eat_mutex);
 }
