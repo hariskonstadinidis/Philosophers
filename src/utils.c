@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hariskon <hariskon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hkonstan <hkonstan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/19 20:50:31 by hkonstan          #+#    #+#             */
-/*   Updated: 2026/02/23 13:19:26 by hariskon         ###   ########.fr       */
+/*   Updated: 2026/02/24 20:01:09 by hkonstan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ void	ft_usleep(t_philo *philo, long long duration)
 		}
 		else
 			pthread_mutex_unlock(&philo->total->print_mutex);
-		usleep(1000);
+		usleep(100);
 	}
 }
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   simulation.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hariskon <hariskon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hkonstan <hkonstan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/22 19:10:28 by hariskon          #+#    #+#             */
-/*   Updated: 2026/02/23 13:19:38 by hariskon         ###   ########.fr       */
+/*   Updated: 2026/02/24 20:00:07 by hkonstan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ static void	*routine(void *arg)
 		ft_usleep(philo, philo->total->time_to_sleep);
 		if (!print_message (philo, THINK))
 			return (NULL);
-		usleep(1000);
+		ft_usleep(philo, philo->total->time_to_think);
 	}
 	return (NULL);
 }
@@ -56,7 +56,7 @@ static void	*fail_check(void *arg)
 		if (i == total->num_philosophers)
 		{
 			i = 0;
-			usleep(2000);
+			usleep(1000);
 		}
 	}
 	return (NULL);
@@ -65,17 +65,13 @@ static void	*fail_check(void *arg)
 int	start_sim(t_total *total)
 {
 	int				i;
-	struct timeval	t;
-	long			time;
 
-	gettimeofday(&t, NULL);
-	time = t.tv_sec * 1000 + t.tv_usec / 1000;
-	total->time = time;
+	total->time = get_time(0);
 	i = 0;
 	pthread_mutex_lock(&total->print_mutex);
 	while (i < total->num_philosophers)
 	{
-		total->philosophers[i].last_eat_time = time;
+		total->philosophers[i].last_eat_time = total->time;
 		if (pthread_create(&total->philosophers[i].thread, NULL, routine,
 				&total->philosophers[i]))
 			return (write(2, "pthread_init fail 1 in init_philos\n", 35), 0);

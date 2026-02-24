@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philosophers.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hariskon <hariskon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hkonstan <hkonstan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/18 12:30:33 by hariskon          #+#    #+#             */
-/*   Updated: 2026/02/22 20:36:44 by hariskon         ###   ########.fr       */
+/*   Updated: 2026/02/24 20:00:47 by hkonstan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,12 @@
 # include <stdio.h>
 
 typedef struct s_total	t_total;
+
+typedef enum s_both
+{
+	YES,
+	NO,
+}	t_both;
 
 typedef enum s_state
 {
@@ -52,6 +58,7 @@ typedef struct s_total
 	long long		time_to_die;
 	long long		time_to_eat;
 	long long		time_to_sleep;
+	long long		time_to_think;
 	int				num_meals;
 	t_philo			*philosophers;
 	pthread_mutex_t	*forks;

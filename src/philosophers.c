@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philosophers.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hariskon <hariskon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hkonstan <hkonstan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/18 12:32:05 by hariskon          #+#    #+#             */
-/*   Updated: 2026/02/23 13:19:51 by hariskon         ###   ########.fr       */
+/*   Updated: 2026/02/24 20:03:43 by hkonstan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,14 @@ int	get_forks(t_philo *philo)
 	int	id;
 
 	id = philo->id;
+	if (philo->total->num_philosophers == 1)
+	{
+		pthread_mutex_lock(philo->left_fork);
+		if (!print_message(philo, FORK))
+			return (pthread_mutex_unlock(philo->left_fork), 0);
+		pthread_mutex_unlock(philo->left_fork);
+		ft_usleep(philo, philo->total->time_to_die + 1000);
+	}
 	if (id % 2 == 0)
 	{
 		if (!get_one_fork(philo->left_fork, philo->right_fork, philo))
@@ -70,14 +78,6 @@ int	check_fed(t_total *total, int *fed_count, int i)
 	return (1);
 }
 
-static void	handle_one_philo(t_total *total)
-{
-	printf("0 1 has taken a fork\n");
-	usleep(total->time_to_die * 1000);
-	printf("%lld 1 died\n", total->time_to_die);
-	free_all(total);
-}
-
 int	main(int argc, char **argv)
 {
 	t_total		total;
@@ -86,8 +86,6 @@ int	main(int argc, char **argv)
 		return (1);
 	if (!initialize(&total, argv))
 		return (free_all(&total), 1);
-	if (total.num_philosophers == 1)
-		return (handle_one_philo(&total), 0);
 	if (!start_sim(&total))
 		return (1);
 	if (!end_sim(&total))

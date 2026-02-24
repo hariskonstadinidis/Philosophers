@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   initialize.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hariskon <hariskon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hkonstan <hkonstan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/18 13:45:34 by hariskon          #+#    #+#             */
-/*   Updated: 2026/02/23 12:58:07 by hariskon         ###   ########.fr       */
+/*   Updated: 2026/02/24 20:08:26 by hkonstan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,10 @@ static int	init_total(char **argv, t_total *total)
 	total->time_to_die = check_number(argv[2]);
 	total->time_to_eat = check_number(argv[3]);
 	total->time_to_sleep = check_number(argv[4]);
+	total->time_to_think = (total->time_to_die - total->time_to_eat
+			- total->time_to_sleep) / 2;
+	if (total->time_to_think < 0)
+		total->time_to_think = 2;
 	if (argv[5])
 		total->num_meals = check_number(argv[5]);
 	else
