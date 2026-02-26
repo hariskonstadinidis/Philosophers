@@ -27,5 +27,6 @@ void	free_all(t_total *total)
 	while (i < total->num_philosophers)
 		pthread_mutex_destroy(&total->forks[i++]);
 	pthread_mutex_destroy(&total->print_mutex);
+	pthread_mutex_destroy(&total->state_mutex);
 	free(total->forks);
 }

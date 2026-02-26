@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philosophers.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hkonstan <hkonstan@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hariskon <hariskon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/18 12:32:05 by hariskon          #+#    #+#             */
-/*   Updated: 2026/02/24 20:03:43 by hkonstan         ###   ########.fr       */
+/*   Updated: 2026/02/25 14:55:07 by hariskon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,13 @@ static int	get_one_fork(pthread_mutex_t *first_fork,
 	if (!print_message(philo, FORK))
 		return (pthread_mutex_unlock(second_fork),
 			pthread_mutex_unlock(first_fork), 0);
+	if (!print_message(philo, EAT))
+		return (pthread_mutex_unlock(second_fork),
+			pthread_mutex_unlock(first_fork), 0);
 	pthread_mutex_lock(&philo->eat_mutex);
 	philo->last_eat_time = get_time(0);
 	philo->times_eaten++;
 	pthread_mutex_unlock(&philo->eat_mutex);
-	if (!print_message(philo, EAT))
-		return (pthread_mutex_unlock(second_fork),
-			pthread_mutex_unlock(first_fork), 0);
 	ft_usleep(philo, philo->total->time_to_eat);
 	pthread_mutex_unlock(first_fork);
 	pthread_mutex_unlock(second_fork);
@@ -69,9 +69,9 @@ int	check_fed(t_total *total, int *fed_count, int i)
 		(*fed_count)++;
 	if (*fed_count >= total->num_philosophers)
 	{
-		pthread_mutex_lock(&total->print_mutex);
+		pthread_mutex_lock(&total->state_mutex);
 		total->state = FED;
-		pthread_mutex_unlock(&total->print_mutex);
+		pthread_mutex_unlock(&total->state_mutex);
 		pthread_mutex_unlock(&total->philosophers[i].eat_mutex);
 		return (0);
 	}

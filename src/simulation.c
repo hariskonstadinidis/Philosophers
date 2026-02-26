@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   simulation.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hkonstan <hkonstan@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hariskon <hariskon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/22 19:10:28 by hariskon          #+#    #+#             */
-/*   Updated: 2026/02/24 20:00:07 by hkonstan         ###   ########.fr       */
+/*   Updated: 2026/02/25 14:55:07 by hariskon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ static void	*routine(void *arg)
 	pthread_mutex_lock(&philo->total->print_mutex);
 	pthread_mutex_unlock(&philo->total->print_mutex);
 	if (philo->id % 2 != 0)
-		usleep(2000);
+		ft_usleep(philo, philo->total->time_to_eat);
 	while (1)
 	{
 		if (!get_forks(philo))
@@ -56,7 +56,7 @@ static void	*fail_check(void *arg)
 		if (i == total->num_philosophers)
 		{
 			i = 0;
-			usleep(1000);
+			usleep(500);
 		}
 	}
 	return (NULL);
@@ -103,19 +103,17 @@ int	print_message(t_philo *philo, t_state status)
 {
 	long long	time;
 
-	pthread_mutex_lock(&philo->total->print_mutex);
 	time = get_time(philo->total->time);
-	if (philo->total->state == DEAD)
+	pthread_mutex_lock(&philo->total->print_mutex);
+	pthread_mutex_lock(&philo->total->state_mutex);
+	if (philo->total->state == DEAD || philo->total->state == FED)
 	{
+		pthread_mutex_unlock(&philo->total->state_mutex);
 		pthread_mutex_unlock(&philo->total->print_mutex);
 		return (0);
 	}
-	else if (philo->total->state == FED)
-	{
-		pthread_mutex_unlock(&philo->total->print_mutex);
-		return (0);
-	}
-	else if (status == FORK)
+	pthread_mutex_unlock(&philo->total->state_mutex);
+	if (status == FORK)
 		printf("%lli %i has taken a fork\n", time, philo->id + 1);
 	else if (status == EAT)
 		printf("%lli %i is eating\n", time, philo->id + 1);

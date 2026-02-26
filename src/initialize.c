@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   initialize.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hkonstan <hkonstan@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hariskon <hariskon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/18 13:45:34 by hariskon          #+#    #+#             */
-/*   Updated: 2026/02/24 20:08:26 by hkonstan         ###   ########.fr       */
+/*   Updated: 2026/02/25 13:58:15 by hariskon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,16 +63,20 @@ static int	init_total(char **argv, t_total *total)
 	total->time_to_die = check_number(argv[2]);
 	total->time_to_eat = check_number(argv[3]);
 	total->time_to_sleep = check_number(argv[4]);
-	total->time_to_think = (total->time_to_die - total->time_to_eat
-			- total->time_to_sleep) / 2;
+	if (total->num_philosophers % 2 == 0)
+		total->time_to_think = total->time_to_eat - total->time_to_sleep;
+	else
+		total->time_to_think = 2 * total->time_to_eat - total->time_to_sleep;
 	if (total->time_to_think < 0)
-		total->time_to_think = 2;
+		total->time_to_think = 0;
 	if (argv[5])
 		total->num_meals = check_number(argv[5]);
 	else
 		total->num_meals = -1;
 	total->state = ALIVE;
 	if (pthread_mutex_init(&total->print_mutex, NULL))
+		return (write(2, "mutex_init fail in init_total\n", 30), 0);
+	if (pthread_mutex_init(&total->state_mutex, NULL))
 		return (write(2, "mutex_init fail in init_total\n", 30), 0);
 	return (1);
 }

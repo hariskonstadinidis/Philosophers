@@ -63,6 +63,7 @@ typedef struct s_total
 	t_philo			*philosophers;
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	print_mutex;
+	pthread_mutex_t	state_mutex;
 	pthread_t		monitor;
 }	t_total;
 
