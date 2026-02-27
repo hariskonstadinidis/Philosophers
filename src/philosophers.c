@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philosophers.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hariskon <hariskon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hkonstan <hkonstan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/18 12:32:05 by hariskon          #+#    #+#             */
-/*   Updated: 2026/02/25 14:55:07 by hariskon         ###   ########.fr       */
+/*   Updated: 2026/02/27 11:04:56 by hkonstan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,11 +85,11 @@ int	main(int argc, char **argv)
 	if (!check_input(argc, argv))
 		return (1);
 	if (!initialize(&total, argv))
-		return (free_all(&total), 1);
+		return (1);
 	if (!start_sim(&total))
-		return (1);
+		return (free_all(&total), 1);
 	if (!end_sim(&total))
-		return (1);
+		return (free_all(&total), 1);
 	free_all(&total);
 	return (0);
 }

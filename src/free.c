@@ -3,16 +3,29 @@
 /*                                                        :::      ::::::::   */
 /*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hariskon <hariskon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hkonstan <hkonstan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/19 14:13:08 by hkonstan          #+#    #+#             */
-/*   Updated: 2026/02/23 13:03:59 by hariskon         ###   ########.fr       */
+/*   Updated: 2026/02/27 10:33:07 by hkonstan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-void	free_all(t_total *total)
+void	destroy_forks_mutex(t_total *total)
+{
+	int	i;
+
+	i = 0;
+	while (i < total->num_philosophers)
+	{
+		pthread_mutex_destroy(&total->forks[i]);
+		i++;
+	}
+	free(total->forks);
+}
+
+void	destroy_philo_mutex(t_total *total)
 {
 	int	i;
 
@@ -23,10 +36,17 @@ void	free_all(t_total *total)
 		i++;
 	}
 	free(total->philosophers);
-	i = 0;
-	while (i < total->num_philosophers)
-		pthread_mutex_destroy(&total->forks[i++]);
+}
+
+void	destroy_state_print_mutex(t_total *total)
+{
 	pthread_mutex_destroy(&total->print_mutex);
 	pthread_mutex_destroy(&total->state_mutex);
-	free(total->forks);
+}
+
+void	free_all(t_total *total)
+{
+	destroy_philo_mutex(total);
+	destroy_forks_mutex(total);
+	destroy_state_print_mutex(total);
 }

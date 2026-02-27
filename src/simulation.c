@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   simulation.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hariskon <hariskon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hkonstan <hkonstan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/22 19:10:28 by hariskon          #+#    #+#             */
-/*   Updated: 2026/02/25 14:55:07 by hariskon         ###   ########.fr       */
+/*   Updated: 2026/02/27 11:14:27 by hkonstan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,12 @@ int	start_sim(t_total *total)
 		total->philosophers[i].last_eat_time = total->time;
 		if (pthread_create(&total->philosophers[i].thread, NULL, routine,
 				&total->philosophers[i]))
+		{
+			while (--i >= 0)
+				if (pthread_join(total->philosophers[i].thread, NULL))
+					return (write(2, "thread_join fail in start_sim\n", 30), 0);
 			return (write(2, "pthread_init fail 1 in init_philos\n", 35), 0);
+		}
 		i++;
 	}
 	if (pthread_create(&total->monitor, NULL, fail_check, total))
@@ -86,17 +91,25 @@ int	start_sim(t_total *total)
 int	end_sim(t_total *total)
 {
 	int	i;
+	int result;
 
+	result = 1;
 	i = 0;
 	while (i < total->num_philosophers)
 	{
 		if (pthread_join(total->philosophers[i].thread, NULL))
-			return (write(2, "pthread_join fail 1 in init_philos\n", 35), 0);
+		{
+			write(2, "pthread_join fail 1 in end_sim\n", 31);
+			result = 0;
+		}	
 		i++;
 	}
 	if (pthread_join(total->monitor, NULL))
-		return (write(2, "pthread_join fail 2 in init_philos\n", 35), 0);
-	return (1);
+	{
+		write(2, "pthread_join fail 1 in end_sim\n", 31);
+		result = 0;
+	}
+	return (result);
 }
 
 int	print_message(t_philo *philo, t_state status)

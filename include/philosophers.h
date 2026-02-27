@@ -6,7 +6,7 @@
 /*   By: hkonstan <hkonstan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/18 12:30:33 by hariskon          #+#    #+#             */
-/*   Updated: 2026/02/24 20:00:47 by hkonstan         ###   ########.fr       */
+/*   Updated: 2026/02/27 10:33:20 by hkonstan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,6 @@
 # include <stdio.h>
 
 typedef struct s_total	t_total;
-
-typedef enum s_both
-{
-	YES,
-	NO,
-}	t_both;
 
 typedef enum s_state
 {
@@ -68,6 +62,9 @@ typedef struct s_total
 }	t_total;
 
 void		free_all(t_total *total);
+void		destroy_forks_mutex(t_total *total);
+void		destroy_philo_mutex(t_total *total);
+void		destroy_state_print_mutex(t_total *total);
 
 int			check_number(char *str);
 int			check_input(int argc, char **argv);

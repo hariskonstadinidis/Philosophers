@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   initialize.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hariskon <hariskon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hkonstan <hkonstan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/18 13:45:34 by hariskon          #+#    #+#             */
-/*   Updated: 2026/02/25 13:58:15 by hariskon         ###   ########.fr       */
+/*   Updated: 2026/02/27 10:41:29 by hkonstan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@ static int	init_forks(t_total *total)
 	{
 		if (pthread_mutex_init(&total->forks[i], NULL))
 		{
-			while (i >= 0)
-				pthread_mutex_destroy((&total->forks[i--]));
+			while (--i >= 0)
+				pthread_mutex_destroy((&total->forks[i]));
 			return (write(2, "mutex_init fail in forks\n", 25), 0);
 		}
 		i++;
@@ -48,8 +48,9 @@ static int	init_philos(t_total *total)
 		total->philosophers[i].right_fork = &total->forks[i];
 		if (pthread_mutex_init(&total->philosophers[i].eat_mutex, NULL))
 		{
-			while (i >= 0)
-				pthread_mutex_destroy((&total->philosophers[i--].eat_mutex));
+			while (--i >= 0)
+				pthread_mutex_destroy((&total->philosophers[i].eat_mutex));
+			free(total->philosophers);
 			return (write(2, "mutex_init fail in init_philos\n", 31), 0);
 		}
 		total->philosophers[i++].total = total;
@@ -77,23 +78,26 @@ static int	init_total(char **argv, t_total *total)
 	if (pthread_mutex_init(&total->print_mutex, NULL))
 		return (write(2, "mutex_init fail in init_total\n", 30), 0);
 	if (pthread_mutex_init(&total->state_mutex, NULL))
+	{
+		pthread_mutex_destroy(&total->print_mutex);
 		return (write(2, "mutex_init fail in init_total\n", 30), 0);
+	}
 	return (1);
 }
 
 int	initialize(t_total *total, char **argv)
 {
 	if (!init_total(argv, total))
-		return (write(2, "mem alloc 0 in init fail\n", 25), 0);
+		return (0);
 	total->forks = malloc(sizeof(pthread_mutex_t) * total->num_philosophers);
 	if (!total->forks)
 		return (write(2, "mem alloc 1 in init fail\n", 25), 0);
 	if (!init_forks(total))
-		return (write(2, "mem alloc 2 in init fail\n", 25), 0);
+		return (destroy_state_print_mutex(total), 0);
 	total->philosophers = malloc(sizeof(t_philo) * total->num_philosophers);
 	if (!total->philosophers)
-		return (write(2, "mem alloc 3 in init fail\n", 25), 0);
+		return (write(2, "mem alloc 2 in init fail\n", 25), 0);
 	if (!init_philos(total))
-		return (0);
+		return (destroy_state_print_mutex(total), destroy_forks_mutex(total), 0);
 	return (1);
 }
