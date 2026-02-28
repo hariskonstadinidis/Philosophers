@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   simulation.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hkonstan <hkonstan@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hariskon <hariskon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/22 19:10:28 by hariskon          #+#    #+#             */
-/*   Updated: 2026/02/27 11:14:27 by hkonstan         ###   ########.fr       */
+/*   Updated: 2026/02/28 12:55:49 by hariskon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ int	start_sim(t_total *total)
 int	end_sim(t_total *total)
 {
 	int	i;
-	int result;
+	int	result;
 
 	result = 1;
 	i = 0;
@@ -101,7 +101,7 @@ int	end_sim(t_total *total)
 		{
 			write(2, "pthread_join fail 1 in end_sim\n", 31);
 			result = 0;
-		}	
+		}
 		i++;
 	}
 	if (pthread_join(total->monitor, NULL))

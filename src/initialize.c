@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   initialize.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hkonstan <hkonstan@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hariskon <hariskon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/18 13:45:34 by hariskon          #+#    #+#             */
-/*   Updated: 2026/02/27 10:41:29 by hkonstan         ###   ########.fr       */
+/*   Updated: 2026/02/28 12:56:09 by hariskon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,7 @@ int	initialize(t_total *total, char **argv)
 	if (!total->philosophers)
 		return (write(2, "mem alloc 2 in init fail\n", 25), 0);
 	if (!init_philos(total))
-		return (destroy_state_print_mutex(total), destroy_forks_mutex(total), 0);
+		return (destroy_state_print_mutex(total),
+			destroy_forks_mutex(total), 0);
 	return (1);
 }
